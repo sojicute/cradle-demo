@@ -12,7 +12,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-authors-entity-graph", attributeNodes = {@NamedAttributeNode("author")})
+@NamedEntityGraphs ({
+        @NamedEntityGraph(name = "book-author-genre-entity-graph",
+                attributeNodes = {
+                    @NamedAttributeNode("author"),
+                    @NamedAttributeNode("genre")
+                }
+        )
+})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +28,11 @@ public class Book {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

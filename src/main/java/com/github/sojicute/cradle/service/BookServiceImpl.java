@@ -1,7 +1,9 @@
 package com.github.sojicute.cradle.service;
 
 import com.github.sojicute.cradle.dao.BookDao;
+import com.github.sojicute.cradle.domain.Author;
 import com.github.sojicute.cradle.domain.Book;
+import com.github.sojicute.cradle.domain.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +12,25 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
     final private BookDao bookDao;
+    final private AuthorService authorService;
+    final private GenreService genreService;
 
     @Autowired
-    public BookServiceImpl(BookDao bookDao) {
+    public BookServiceImpl(BookDao bookDao, AuthorService authorService, GenreService genreService) {
         this.bookDao = bookDao;
+        this.authorService = authorService;
+        this.genreService = genreService;
+    }
+
+    @Override
+    public void addBook(Book book) {
+        Author author = authorService.findByName(book.getAuthor().getName());
+        if (author == null) author = new Author(book.getAuthor().getName());
+        Genre genre = genreService.findByName(book.getGenre().getName());
+        if (genre == null) genre = new Genre(book.getGenre().getName());
+        book.setAuthor(author);
+        book.setGenre(genre);
+        bookDao.save(book);
     }
 
     @Override

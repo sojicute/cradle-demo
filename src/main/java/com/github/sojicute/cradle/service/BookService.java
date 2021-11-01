@@ -5,6 +5,7 @@ import com.github.sojicute.cradle.domain.Book;
 import java.util.List;
 
 public interface BookService {
+    void addBook(Book book);
     Book save(Book book);
     Book findById(long id);
 
